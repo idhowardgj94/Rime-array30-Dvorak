@@ -1,0 +1,129 @@
+# Rime schema settings
+# encoding: utf-8
+
+schema:
+  schema_id: array30
+  name: "行列30"
+  version: "0.12"
+  author:
+    - 發明人 廖明德先生
+    - Jiehong Ma <ma.jiehong@gmail.com>
+    - Howard Chang <idhowardgj94@gmail.com>
+  description: |
+    行列輸入法
+    http://www.array.com.tw/
+  dependencies:
+    - luna_quanpin
+
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中文, 西文 ]
+  - name: full_shape
+    states: [ 半角, 全角 ]
+  - name: simplification
+    states: [ 漢字, 汉字 ]
+  - name: extended_charset
+    states: [ 常用, 增廣 ]
+  - name: ascii_punct
+    states: [ 。，, ．， ]
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - table_translator
+    - punct_translator
+    - reverse_lookup_translator
+  filters:
+    - simplifier
+    - uniquifier
+
+speller:
+  alphabet: "abcdefghjiklmnopqrstuvwxyz;,.'-/"
+  delimiter: " -"
+  #max_code_length: 5
+
+translator:
+  dictionary: array30
+  enable_charset_filter: true
+  disable_user_dict_for_patterns:
+    - "^.$"  # 單碼不調頻
+  preedit_format: &format
+    - "xform|'|1^|"
+    - 'xform|,|2^|'
+    - 'xform|\.|3^|'
+    - 'xform|p|4^|'
+    - 'xform|y|5^|'
+    - 'xform|f|6^|'
+    - 'xform|g|7^|'
+    - 'xform|c|8^|'
+    - 'xform|r|9^|'
+    - 'xform|l|0^|'
+    - 'xform|a|1-|'
+    - 'xform|o|2-|'
+    - 'xform|e|3-|'
+    - 'xform|u|4-|'
+    - 'xform|i|5-|'
+    - 'xform|d|6-|'
+    - 'xform|h|7-|'
+    - 'xform|t|8-|'
+    - 'xform|n|9-|'
+    - 'xform|s|0-|'
+    - 'xform|v|9v|'
+    - 'xform|;|1v|'
+    - 'xform|q|2v|'
+    - 'xform|j|3v|'
+    - 'xform|k|4v|'
+    - 'xform|x|5v|'
+    - 'xform|b|6v|'
+    - 'xform|m|7v|'
+    - 'xform|w|8v|'
+    - 'xform|z|0v|'
+    - 'xlit|~-^v|～‐↑↓|'
+  comment_format: *format
+
+abc_segmentor:
+  extra_tags:
+    - reverse_lookup
+
+reverse_lookup:
+  dictionary: luna_pinyin
+  prism: luna_quanpin
+  prefix: "`"
+  suffix: "'"
+  tips: 〔拼音〕
+  preedit_format:
+    - xform/([nl])v/$1ü/
+    - xform/([nl])ue/$1üe/
+    - xform/([jqxy])v/$1u/
+  comment_format: *format
+
+punctuator:
+  import_preset: default
+
+key_binder:
+  import_preset: default
+  bindings:
+    - { when: paging, accept: comma, send: comma }
+    - { when: has_menu, accept: period, send: period }
+
+recognizer:
+  patterns:
+    email: "^[a-z][-_.0-9a-z]*@.*$"
+    uppercase: "[A-Z][-_+.'0-9A-Za-z]*$"
+    url: "^(www[.]|https?:|ftp:|mailto:).*$"
+    reverse_lookup: "`[a-z]*'?$"
