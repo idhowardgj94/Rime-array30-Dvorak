@@ -20,4 +20,6 @@
 
 rime 配置尚不支援行列特別碼及簡碼配置。 
 
+## transform.py
 
+附上Qwerty to Dvorak dict mapping檔。如需自行轉換，需將官方行列子典檔放在相同目錄底下。
